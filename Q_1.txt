@@ -1,0 +1,103 @@
+Q.1 Write a Java Program to implement Observer Design Pattern for number conversion.
+Accept a number in Decimal form and represent it in Hexadecimal, Octal and Binary. 
+Change the Number and it reflects in other forms also 
+
+Ans ->
+
+import java.util.ArrayList;
+import java.util.List;
+
+// Subject interface
+interface NumberSubject {
+    void addObserver(NumberObserver observer);
+
+    void removeObserver(NumberObserver observer);
+
+    void notifyObservers();
+}
+
+// Concrete Subject
+class DecimalNumber implements NumberSubject {
+    private int decimalNumber;
+    private List<NumberObserver> observers = new ArrayList<>();
+
+    public int getDecimalNumber() {
+        return decimalNumber;
+    }
+
+    public void setDecimalNumber(int decimalNumber) {
+        this.decimalNumber = decimalNumber;
+        notifyObservers();
+    }
+
+    @Override
+    public void addObserver(NumberObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(NumberObserver observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (NumberObserver observer : observers) {
+            observer.update(decimalNumber);
+        }
+    }
+}
+
+// Observer interface
+interface NumberObserver {
+    void update(int decimalNumber);
+}
+
+// Concrete Observers
+class HexObserver implements NumberObserver {
+    @Override
+    public void update(int decimalNumber) {
+        String hexNumber = Integer.toHexString(decimalNumber);
+        System.out.println("Hexadecimal: " + hexNumber);
+    }
+}
+
+class OctalObserver implements NumberObserver {
+    @Override
+    public void update(int decimalNumber) {
+        String octalNumber = Integer.toOctalString(decimalNumber);
+        System.out.println("Octal: " + octalNumber);
+    }
+}
+
+class BinaryObserver implements NumberObserver {
+    @Override
+    public void update(int decimalNumber) {
+        String binaryNumber = Integer.toBinaryString(decimalNumber);
+        System.out.println("Binary: " + binaryNumber);
+    }
+}
+
+// Client code
+public class ObserverPatternExample {
+    public static void main(String[] args) {
+        DecimalNumber decimalNumber = new DecimalNumber();
+
+        HexObserver hexObserver = new HexObserver();
+        OctalObserver octalObserver = new OctalObserver();
+        BinaryObserver binaryObserver = new BinaryObserver();
+
+        decimalNumber.addObserver(hexObserver);
+        decimalNumber.addObserver(octalObserver);
+        decimalNumber.addObserver(binaryObserver);
+
+        // Set a decimal number and observe the changes in other forms
+        decimalNumber.setDecimalNumber(10);
+        System.out.println();
+
+        decimalNumber.setDecimalNumber(25);
+        System.out.println();
+
+        decimalNumber.setDecimalNumber(50);
+    }
+}
